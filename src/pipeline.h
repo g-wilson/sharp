@@ -70,6 +70,16 @@ struct PipelineBaton {
   double gamma;
   bool greyscale;
   bool normalize;
+  int toneCurveInMax;
+  int toneCurveOutMax;
+  int toneCurveBlackPoint;
+  int toneCurveWhitePoint;
+  double toneCurveShadowPoint;
+  double toneCurveMidtonePoint;
+  double toneCurveHighlightPoint;
+  int toneCurveShadowAdj;
+  int toneCurveMidtoneAdj;
+  int toneCurveHighlightAdj;
   int angle;
   bool rotateBeforePreExtract;
   bool flip;
@@ -138,6 +148,16 @@ struct PipelineBaton {
     gamma(0.0),
     greyscale(false),
     normalize(false),
+    toneCurveInMax(255),
+    toneCurveOutMax(255),
+    toneCurveBlackPoint(0),
+    toneCurveWhitePoint(100),
+    toneCurveShadowPoint(0),
+    toneCurveMidtonePoint(0.5),
+    toneCurveHighlightPoint(1),
+    toneCurveShadowAdj(0),
+    toneCurveMidtoneAdj(0),
+    toneCurveHighlightAdj(0),
     angle(0),
     flip(false),
     flop(false),

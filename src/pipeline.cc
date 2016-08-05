@@ -787,6 +787,40 @@ class PipelineWorker : public AsyncWorker {
         image = Normalize(image);
       }
 
+      // Apply a lookup table from a tone curve adjustment values
+      if (baton->toneCurveInMax && baton->toneCurveOutMax) {
+        VOption *option = VImage::option();
+        option->set("in_max", baton->toneCurveInMax)
+          ->set("out_max", baton->toneCurveOutMax);
+
+        if (baton->toneCurveBlackPoint) {
+          option->set("Lb", baton->toneCurveBlackPoint);
+        }
+        if (baton->toneCurveWhitePoint) {
+          option->set("Lw", baton->toneCurveWhitePoint);
+        }
+        if (baton->toneCurveShadowPoint) {
+          option->set("Ps", baton->toneCurveShadowPoint);
+        }
+        if (baton->toneCurveMidtonePoint) {
+          option->set("Pm", baton->toneCurveMidtonePoint);
+        }
+        if (baton->toneCurveHighlightPoint) {
+          option->set("Ph", baton->toneCurveHighlightPoint);
+        }
+        if (baton->toneCurveShadowAdj) {
+          option->set("S", baton->toneCurveShadowAdj);
+        }
+        if (baton->toneCurveMidtoneAdj) {
+          option->set("M", baton->toneCurveMidtoneAdj);
+        }
+        if (baton->toneCurveHighlightAdj) {
+          option->set("H", baton->toneCurveHighlightAdj);
+        }
+
+        image = image.maplut(image.tonelut(option));
+      }
+
       // Apply bitwise boolean operation between images
       if (baton->booleanOp != VIPS_OPERATION_BOOLEAN_LAST &&
           (baton->booleanBufferInLength > 0 || !baton->booleanFileIn.empty())) {
@@ -1261,6 +1295,17 @@ NAN_METHOD(pipeline) {
   baton->extendLeft = attrAs<int32_t>(options, "extendLeft");
   baton->extendRight = attrAs<int32_t>(options, "extendRight");
   baton->extractChannel = attrAs<int32_t>(options, "extractChannel");
+  // Tone curve
+  baton->toneCurveInMax = attrAs<int32_t>(options, "toneCurveInMax");
+  baton->toneCurveOutMax = attrAs<int32_t>(options, "toneCurveOutMax");
+  baton->toneCurveBlackPoint = attrAs<int32_t>(options, "toneCurveBlackPoint");
+  baton->toneCurveWhitePoint = attrAs<int32_t>(options, "toneCurveWhitePoint");
+  baton->toneCurveShadowPoint = attrAs<double>(options, "toneCurveShadowPoint");
+  baton->toneCurveMidtonePoint = attrAs<double>(options, "toneCurveMidtonePoint");
+  baton->toneCurveHighlightPoint = attrAs<double>(options, "toneCurveHighlightPoint");
+  baton->toneCurveShadowAdj = attrAs<int32_t>(options, "toneCurveShadowAdj");
+  baton->toneCurveMidtoneAdj = attrAs<int32_t>(options, "toneCurveMidtoneAdj");
+  baton->toneCurveHighlightAdj = attrAs<int32_t>(options, "toneCurveHighlightAdj");
   // Output options
   baton->progressive = attrAs<bool>(options, "progressive");
   baton->quality = attrAs<int32_t>(options, "quality");

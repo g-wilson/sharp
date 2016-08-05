@@ -808,6 +808,75 @@ Sharp.prototype.extend = function(extend) {
   return this;
 };
 
+/*
+  Apply a tone-curve as a lookup table
+ */
+Sharp.prototype.toneCurve = function(options) {
+  if (!options.hasOwnProperty('in_max')) {
+    options.in_max = 255;
+  } else if (!isInteger(options.in_max) || !inRange(options.in_max, 0, 255)) {
+    throw new Error('Missing range for tone curve in_max value ' + options.in_max);
+  }
+  if (!options.hasOwnProperty('out_max')) {
+    options.out_max = 255;
+  } else if (!isInteger(options.in_max) || !inRange(options.out_max, 0, 255)) {
+    throw new Error('Missing range for tone curve out_max value ' + options.out_max);
+  }
+  if (!options.hasOwnProperty('black_point')) {
+    options.black_point = 0;
+  } else if (!isInteger(options.black_point) || !inRange(options.black_point, 0, 100)) {
+    throw new Error('Black point is out of range [0-100]');
+  }
+  if (!options.hasOwnProperty('white_point')) {
+    options.white_point = 0;
+  } else if (!isInteger(options.white_point) || !inRange(options.white_point, 0, 100)) {
+    throw new Error('White point is out of range [0-100]');
+  }
+  if (!options.hasOwnProperty('shadow_point')) {
+    options.shadow_point = 0.2;
+  } else if (!isNumber(options.shadow_point) || !inRange(options.shadow_point, 0, 1)) {
+    throw new Error('Shadow point is out of range [0-1]');
+  }
+  if (!options.hasOwnProperty('midtone_point')) {
+    options.midtone_point = 0.5;
+  } else if (!isNumber(options.midtone_point) || !inRange(options.midtone_point, 0, 1)) {
+    throw new Error('Midtone point is out of range [0-1]');
+  }
+  if (!options.hasOwnProperty('highlight_point')) {
+    options.highlight_point = 0.8;
+  } else if (!isNumber(options.highlight_point) || !inRange(options.highlight_point, 0, 1)) {
+    throw new Error('Highlight point is out of range [0-1]');
+  }
+  if (!options.hasOwnProperty('shadows')) {
+    options.shadows = 0;
+  } else if (!isInteger(options.shadows) || !inRange(options.shadows, -30, 30)) {
+    throw new Error('Shadows value is out of range [-30+30]');
+  }
+  if (!options.hasOwnProperty('midtones')) {
+    options.midtones = 0;
+  } else if (!isInteger(options.midtones) || !inRange(options.midtones, -30, 30)) {
+    throw new Error('Midtones value is out of range [-30+30]');
+  }
+  if (!options.hasOwnProperty('highlights')) {
+    options.highlights = 0;
+  } else if (!isInteger(options.highlights) || !inRange(options.highlights, -30, 30)) {
+    throw new Error('Highlights value is out of range [-30+30]');
+  }
+
+  this.options.toneCurveInMax = options.in_max;
+  this.options.toneCurveOutMax = options.out_max;
+  this.options.toneCurveBlackPoint = options.black_point;
+  this.options.toneCurveWhitePoint = options.white_point;
+  this.options.toneCurveShadowPoint = options.shadow_point;
+  this.options.toneCurveMidtonePoint = options.midtone_point;
+  this.options.toneCurveHighlightPoint = options.highlight_point;
+  this.options.toneCurveShadowAdj = options.shadows;
+  this.options.toneCurveMidtoneAdj = options.midtones;
+  this.options.toneCurveHighlightAdj = options.highlights;
+
+  return this;
+};
+
 // Kernels for reduction
 module.exports.kernel = {
   cubic: 'cubic',
